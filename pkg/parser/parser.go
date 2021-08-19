@@ -10,6 +10,15 @@ type Title struct {
 	Value string
 }
 
+type HeadingCount struct {
+	HOne   int
+	HTwo   int
+	HThree int
+	HFour  int
+	HFive  int
+	HSix   int
+}
+
 func FindTitle(body io.Reader) (string, error) {
 	document, err := html.Parse(body)
 	if err != nil {
@@ -25,6 +34,35 @@ func FindTitle(body io.Reader) (string, error) {
 	title = buildTitle(nodes[0])
 
 	return title.Value, nil
+}
+
+func FindAllHeadings(body io.Reader) (HeadingCount, error) {
+	document, err := html.Parse(body)
+	if err != nil {
+		return HeadingCount{}, err
+	}
+
+	var count HeadingCount
+
+	headingOneNodes := getNodes(document, "h1")
+	count.HOne = len(headingOneNodes)
+
+	headingTwoNodes := getNodes(document, "h2")
+	count.HTwo = len(headingTwoNodes)
+
+	headingThreeNodes := getNodes(document, "h3")
+	count.HThree = len(headingThreeNodes)
+
+	headingFourNodes := getNodes(document, "h4")
+	count.HFour = len(headingFourNodes)
+
+	headingFiveNodes := getNodes(document, "h5")
+	count.HFive = len(headingFiveNodes)
+
+	headingSixNodes := getNodes(document, "h6")
+	count.HSix = len(headingSixNodes)
+
+	return count, nil
 }
 
 func getNodes(node *html.Node, nodeType string) []*html.Node {

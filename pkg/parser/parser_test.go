@@ -182,6 +182,38 @@ func TestFindAllLinks(t *testing.T) {
 		assertCount(t, 0, internalLinks)
 		assertCount(t, 2, externalLinks)
 	})
+
+	t.Run("it returns 2 as the number of inaccessible links", func(t *testing.T) {
+		pageURL := "https://example.com"
+		example := `<html>
+						<body>
+							<a href="https://google.com">Google</a>
+							<a href="https://somedomain.com/about">About</a>
+							<a href="https://anotherdomain.com">Home</a>
+						</body>
+					</html>`
+
+		links, err := FindAllLinks(strings.NewReader(example), pageURL)
+		checkError(t, err)
+
+		assertCount(t, 2, links.InAccessible)
+	})
+
+	t.Run("it returns 1 as the count of unique inaccessible links", func(t *testing.T) {
+		pageURL := "https://example.com"
+		example := `<html>
+						<body>
+							<a href="https://google.com">Google</a>
+							<a href="https://somedomain.com">Some Domain</a>
+							<a href="https://somedomain.com/">Some Domain</a>
+						</body>
+					</html>`
+
+		links, err := FindAllLinks(strings.NewReader(example), pageURL)
+		checkError(t, err)
+
+		assertCount(t, 1, links.InAccessible)
+	})
 }
 
 func assertPageTitle(t testing.TB, expected, actual string) {

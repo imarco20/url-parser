@@ -3,6 +3,7 @@ package parser
 import (
 	"golang.org/x/net/html"
 	"io"
+	"net/http"
 	"net/url"
 	"strings"
 )
@@ -25,8 +26,9 @@ type Link struct {
 }
 
 type LinkCount struct {
-	Internal int
-	External int
+	Internal     int
+	External     int
+	InAccessible int
 }
 
 func FindTitle(body io.Reader) (string, error) {
@@ -96,6 +98,10 @@ func FindAllLinks(body io.Reader, pageURL string) (LinkCount, error) {
 			linkCount.Internal++
 		} else {
 			linkCount.External++
+		}
+
+		if !isAccessibleLink(link.Href) {
+			linkCount.InAccessible++
 		}
 	}
 
@@ -185,4 +191,17 @@ func getUniqueLinks(links []Link) []Link {
 	}
 
 	return uniqueLinks
+}
+
+func isAccessibleLink(url string) bool {
+	response, err := http.Get(url)
+	if err != nil {
+		return false
+	}
+
+	if response.StatusCode == http.StatusOK {
+		return true
+	}
+
+	return false
 }

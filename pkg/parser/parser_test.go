@@ -103,31 +103,63 @@ func TestFindHeadingsCount(t *testing.T) {
 }
 
 func TestFindAllLinks(t *testing.T) {
-	t.Run("it returns 1 as the amount of page links", func(t *testing.T) {
+	t.Run("it returns 1 as the amount of external links in the page", func(t *testing.T) {
 
+		// This is the URL of the page our user wants to find details about
+		pageURL := "https://example.com"
 		example := `<html>
 						<body>
 							<a href="https://google.com">Google</a>
 						</body>
 					</html>`
 
-		linksCount, err := FindAllLinks(strings.NewReader(example))
+		linksCount, err := FindAllLinks(strings.NewReader(example), pageURL)
 		checkError(t, err)
 
-		assertCount(t, 1, linksCount)
+		externalLinks := linksCount.External
+		assertCount(t, 1, externalLinks)
 	})
 
-	t.Run("it returns 0 as the amount of page links", func(t *testing.T) {
+	t.Run("it returns 2 internal and 0 external links in the page", func(t *testing.T) {
+
+		pageURL := "https://example.com"
 
 		example := `<html>
 						<body>
+							<a href="https://example.com/about">About</a>
+							<a href="https://blog.example.com">Blog</a>
 						</body>
 					</html>`
 
-		linksCount, err := FindAllLinks(strings.NewReader(example))
+		linksCount, err := FindAllLinks(strings.NewReader(example), pageURL)
 		checkError(t, err)
 
-		assertCount(t, 0, linksCount)
+		internalLinks := linksCount.Internal
+		externalLinks := linksCount.External
+
+		assertCount(t, 2, internalLinks)
+		assertCount(t, 0, externalLinks)
+	})
+
+	t.Run("it returns 1 internal and 1 external links in the page", func(t *testing.T) {
+
+		pageURL := "https://example.com"
+
+		example := `<html>
+						<body>
+							<a href="https://example.com/about">About</a>
+							<a href="https://google.com">Google</a>
+						</body>
+					</html>`
+
+		linksCount, err := FindAllLinks(strings.NewReader(example), pageURL)
+		checkError(t, err)
+
+		internalLinks := linksCount.Internal
+		externalLinks := linksCount.External
+
+		assertCount(t, 1, internalLinks)
+		assertCount(t, 1, externalLinks)
 	})
 }
 

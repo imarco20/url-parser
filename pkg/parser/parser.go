@@ -3,6 +3,7 @@ package parser
 import (
 	"golang.org/x/net/html"
 	"io"
+	"net/url"
 	"strings"
 )
 
@@ -17,6 +18,15 @@ type HeadingCount struct {
 	HFour  int
 	HFive  int
 	HSix   int
+}
+
+type Link struct {
+	Href string
+}
+
+type LinkCount struct {
+	Internal int
+	External int
 }
 
 func FindTitle(body io.Reader) (string, error) {
@@ -65,15 +75,29 @@ func FindAllHeadings(body io.Reader) (HeadingCount, error) {
 	return count, nil
 }
 
-func FindAllLinks(body io.Reader) (int, error) {
+func FindAllLinks(body io.Reader, pageURL string) (LinkCount, error) {
 	document, err := html.Parse(body)
 	if err != nil {
-		return 0, err
+		return LinkCount{}, err
 	}
 
+	var links []Link
 	linkNodes := getNodes(document, "a")
 
-	return len(linkNodes), nil
+	for _, node := range linkNodes {
+		links = append(links, buildLink(node))
+	}
+
+	var linkCount LinkCount
+	for _, link := range links {
+		if isInternalLink(link.Href, pageURL) {
+			linkCount.Internal++
+		} else {
+			linkCount.External++
+		}
+	}
+
+	return linkCount, nil
 }
 
 func getNodes(node *html.Node, nodeType string) []*html.Node {
@@ -96,6 +120,16 @@ func buildTitle(node *html.Node) (title Title) {
 	return
 }
 
+func buildLink(node *html.Node) (link Link) {
+	for _, attr := range node.Attr {
+		if attr.Key == "href" {
+			link.Href = attr.Val
+		}
+	}
+
+	return
+}
+
 func getTextFromNode(node *html.Node) string {
 	// Base Case
 	if node.Type == html.TextNode {
@@ -108,4 +142,27 @@ func getTextFromNode(node *html.Node) string {
 	}
 
 	return strings.Join(strings.Fields(text), " ")
+}
+
+func isInternalLink(href, baseURL string) bool {
+	uri, err := url.Parse(href)
+	if err != nil {
+		return false
+	}
+
+	parentUri, err := url.Parse(baseURL)
+	if err != nil {
+		return false
+	}
+
+	if uri.Host != parentUri.Host {
+
+		if strings.HasSuffix(uri.Host, parentUri.Host) {
+			return true
+		}
+
+		return false
+	}
+
+	return true
 }

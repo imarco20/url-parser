@@ -15,16 +15,9 @@ func TestFindTitle(t *testing.T) {
 					</html>`
 
 		title, err := FindTitle(strings.NewReader(htmlPage))
-		if err != nil {
-			t.Fatalf("test failed and encountered the following error: %v", err)
-		}
+		checkError(t, err)
 
-		expected := "Test Page"
-		actual := title
-
-		if actual != expected {
-			t.Errorf("expected to get a title of %q, but got %q", expected, actual)
-		}
+		assertPageTitle(t, "Test Page", title)
 	})
 
 	t.Run("it returns New Page as the page title", func(t *testing.T) {
@@ -35,16 +28,22 @@ func TestFindTitle(t *testing.T) {
 					</html>`
 
 		title, err := FindTitle(strings.NewReader(htmlPage))
+		checkError(t, err)
 
-		if err != nil {
-			t.Fatalf("test failed and encountered the following error: %v", err)
-		}
-
-		expected := "New Page"
-		actual := title
-
-		if actual != expected {
-			t.Errorf("expected to get a title of %q, but got %q", expected, actual)
-		}
+		assertPageTitle(t, "New Page", title)
 	})
+}
+
+func assertPageTitle(t testing.TB, expected, actual string) {
+	t.Helper()
+	if actual != expected {
+		t.Errorf("expected to get a title of %q, but got %q", expected, actual)
+	}
+}
+
+func checkError(t testing.TB, err error) {
+	t.Helper()
+	if err != nil {
+		t.Fatalf("test failed and encountered the following error: %v", err)
+	}
 }

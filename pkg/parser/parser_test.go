@@ -161,6 +161,27 @@ func TestFindAllLinks(t *testing.T) {
 		assertCount(t, 1, internalLinks)
 		assertCount(t, 1, externalLinks)
 	})
+
+	t.Run("it returns only the count of unique external links", func(t *testing.T) {
+		pageURL := "https://example.com"
+
+		example := `<html>
+						<body>
+							<a href="https://google.com/about">About</a>
+							<a href="https://google.com">Google</a>
+							<a href="https://google.com/">Google</a>
+						</body>
+					</html>`
+
+		links, err := FindAllLinks(strings.NewReader(example), pageURL)
+		checkError(t, err)
+
+		internalLinks := links.Internal
+		externalLinks := links.External
+
+		assertCount(t, 0, internalLinks)
+		assertCount(t, 2, externalLinks)
+	})
 }
 
 func assertPageTitle(t testing.TB, expected, actual string) {

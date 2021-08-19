@@ -88,8 +88,10 @@ func FindAllLinks(body io.Reader, pageURL string) (LinkCount, error) {
 		links = append(links, buildLink(node))
 	}
 
+	uniqueLinks := getUniqueLinks(links)
+
 	var linkCount LinkCount
-	for _, link := range links {
+	for _, link := range uniqueLinks {
 		if isInternalLink(link.Href, pageURL) {
 			linkCount.Internal++
 		} else {
@@ -123,7 +125,7 @@ func buildTitle(node *html.Node) (title Title) {
 func buildLink(node *html.Node) (link Link) {
 	for _, attr := range node.Attr {
 		if attr.Key == "href" {
-			link.Href = attr.Val
+			link.Href = removeTrailingSlash(attr.Val)
 		}
 	}
 
@@ -165,4 +167,22 @@ func isInternalLink(href, baseURL string) bool {
 	}
 
 	return true
+}
+
+func removeTrailingSlash(link string) string {
+	return strings.TrimRight(link, "/")
+}
+
+func getUniqueLinks(links []Link) []Link {
+	visited := make(map[string]bool)
+	var uniqueLinks []Link
+
+	for _, link := range links {
+		if _, ok := visited[link.Href]; !ok {
+			visited[link.Href] = true
+			uniqueLinks = append(uniqueLinks, link)
+		}
+	}
+
+	return uniqueLinks
 }

@@ -17,6 +17,9 @@ func FindTitle(body io.Reader) (string, error) {
 	}
 
 	nodes := getNodes(document, "title")
+	if len(nodes) == 0 {
+		return "", err
+	}
 
 	var title Title
 	title = buildTitle(nodes[0])

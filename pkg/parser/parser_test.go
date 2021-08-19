@@ -32,6 +32,18 @@ func TestFindTitle(t *testing.T) {
 
 		assertPageTitle(t, "New Page", title)
 	})
+
+	t.Run(`it returns "" on parsing a document with missing title tag`, func(t *testing.T) {
+		htmlPage := `<html>
+					<head>
+					</head>
+					</html>`
+
+		title, err := FindTitle(strings.NewReader(htmlPage))
+		checkError(t, err)
+
+		assertPageTitle(t, "", title)
+	})
 }
 
 func assertPageTitle(t testing.TB, expected, actual string) {

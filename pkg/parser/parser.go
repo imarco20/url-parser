@@ -65,6 +65,17 @@ func FindAllHeadings(body io.Reader) (HeadingCount, error) {
 	return count, nil
 }
 
+func FindAllLinks(body io.Reader) (int, error) {
+	document, err := html.Parse(body)
+	if err != nil {
+		return 0, err
+	}
+
+	linkNodes := getNodes(document, "a")
+
+	return len(linkNodes), nil
+}
+
 func getNodes(node *html.Node, nodeType string) []*html.Node {
 
 	// Base Case

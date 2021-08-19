@@ -102,6 +102,45 @@ func TestFindHeadingsCount(t *testing.T) {
 	})
 }
 
+func TestFindAllLinks(t *testing.T) {
+	t.Run("it returns 1 as the amount of page links", func(t *testing.T) {
+
+		example := `<html>
+						<body>
+							<a href="https://google.com">Google</a>
+						</body>
+					</html>`
+
+		linksCount, err := FindAllLinks(strings.NewReader(example))
+		checkError(t, err)
+
+		expected := 1
+		actual := linksCount
+
+		if expected != actual {
+			t.Errorf("expected to find %d link, but found %d", expected, actual)
+		}
+	})
+
+	t.Run("it returns 0 as the amount of page links", func(t *testing.T) {
+
+		example := `<html>
+						<body>
+						</body>
+					</html>`
+
+		linksCount, err := FindAllLinks(strings.NewReader(example))
+		checkError(t, err)
+
+		expected := 0
+		actual := linksCount
+
+		if expected != actual {
+			t.Errorf("expected to find %d link, but found %d", expected, actual)
+		}
+	})
+}
+
 func assertPageTitle(t testing.TB, expected, actual string) {
 	t.Helper()
 	if actual != expected {

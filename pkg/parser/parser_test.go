@@ -114,12 +114,7 @@ func TestFindAllLinks(t *testing.T) {
 		linksCount, err := FindAllLinks(strings.NewReader(example))
 		checkError(t, err)
 
-		expected := 1
-		actual := linksCount
-
-		if expected != actual {
-			t.Errorf("expected to find %d link, but found %d", expected, actual)
-		}
+		assertCount(t, 1, linksCount)
 	})
 
 	t.Run("it returns 0 as the amount of page links", func(t *testing.T) {
@@ -132,12 +127,7 @@ func TestFindAllLinks(t *testing.T) {
 		linksCount, err := FindAllLinks(strings.NewReader(example))
 		checkError(t, err)
 
-		expected := 0
-		actual := linksCount
-
-		if expected != actual {
-			t.Errorf("expected to find %d link, but found %d", expected, actual)
-		}
+		assertCount(t, 0, linksCount)
 	})
 }
 
@@ -152,6 +142,13 @@ func assertHeadingCount(t testing.TB, expected, actual int, headingLevel string)
 	t.Helper()
 	if expected != actual {
 		t.Errorf("expected to find %d %q headings, but found %d", expected, headingLevel, actual)
+	}
+}
+
+func assertCount(t testing.TB, expected, actual int) {
+	t.Helper()
+	if expected != actual {
+		t.Errorf("expected a count of %d, but got %d", expected, actual)
 	}
 }
 

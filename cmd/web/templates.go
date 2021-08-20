@@ -1,9 +1,16 @@
 package main
 
 import (
+	"marcode.io/url-parser/pkg/forms"
+	"marcode.io/url-parser/pkg/models"
 	"path/filepath"
 	"text/template"
 )
+
+type templateData struct {
+	Form *forms.Form
+	Link models.LinkDetails
+}
 
 func cacheAllTemplates(dir string) (map[string]*template.Template, error) {
 

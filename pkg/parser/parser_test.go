@@ -5,6 +5,32 @@ import (
 	"testing"
 )
 
+func TestFindHTMLVersion(t *testing.T) {
+	t.Run("it returns the value of HTML version attribute if it exists", func(t *testing.T) {
+		example := `<html version="5.0">
+					<head></head>
+					<body></body>
+					</html>`
+
+		version, err := FindHTMLVersion(strings.NewReader(example))
+		checkError(t, err)
+
+		assertHTMLVersion(t, "5.0", version)
+	})
+
+	t.Run("it returns an empty string if the HTML tag doesn't have a version attribute", func(t *testing.T) {
+		example := `<html>
+					<head></head>
+					<body></body>
+					</html>`
+
+		version, err := FindHTMLVersion(strings.NewReader(example))
+		checkError(t, err)
+
+		assertHTMLVersion(t, "", version)
+	})
+}
+
 func TestFindTitle(t *testing.T) {
 	t.Run("it returns Test Page as the page title", func(t *testing.T) {
 
@@ -245,6 +271,13 @@ func TestCheckIfPageHasLoginForm(t *testing.T) {
 
 		assertPageContainsLoginForm(t, false, contains)
 	})
+}
+
+func assertHTMLVersion(t *testing.T, expected, actual string) {
+	t.Helper()
+	if expected != actual {
+		t.Errorf("expected to find a HTML version value of %q, but got %q", expected, actual)
+	}
 }
 
 func assertPageTitle(t testing.TB, expected, actual string) {

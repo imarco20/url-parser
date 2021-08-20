@@ -8,6 +8,10 @@ import (
 	"strings"
 )
 
+type HTMLTag struct {
+	Version string
+}
+
 type Title struct {
 	Value string
 }
@@ -34,6 +38,23 @@ type LinkCount struct {
 type Button struct {
 	Type string
 	Text string
+}
+
+func FindHTMLVersion(body io.Reader) (string, error) {
+	document, err := html.Parse(body)
+	if err != nil {
+		return "", err
+	}
+
+	nodes := getNodes(document, "html")
+	if len(nodes) == 0 {
+		return "", err
+	}
+
+	var htmlTag HTMLTag
+	htmlTag = buildHTMLTag(nodes[0])
+
+	return htmlTag.Version, nil
 }
 
 func FindTitle(body io.Reader) (string, error) {
@@ -152,6 +173,15 @@ func getNodes(node *html.Node, nodeType string) []*html.Node {
 	}
 
 	return nodes
+}
+
+func buildHTMLTag(node *html.Node) (htmlTag HTMLTag) {
+	for _, attr := range node.Attr {
+		if attr.Key == "version" {
+			htmlTag.Version = attr.Val
+		}
+	}
+	return
 }
 
 func buildTitle(node *html.Node) (title Title) {

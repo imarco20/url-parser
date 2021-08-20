@@ -3,13 +3,18 @@
 {{define "title"}}Home{{end}}
 
 {{define "body"}}
-<form action='/link' method='POST'>
+<form action='/details' method='POST'>
+    {{with .Form}}
     <div>
         <label>Link URL:</label>
-        <input type='text' name='link'>
+        {{with .Errors.Get "link"}}
+            <label class='error'>{{.}}</label>
+        {{end}}
+        <input type='text' name='link' value='{{.Get "link"}}'>
     </div>
     <div>
         <button type='submit' value='Find Details'>
     </div>
+    {{end}}
 </form>
 {{end}}

@@ -6,7 +6,12 @@ import (
 )
 
 func (app *application) homeHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Welcome Home")
+	if r.URL.Path != "/" {
+		http.NotFound(w, r)
+		return
+	}
+
+	app.renderTemplate(w, r, "home.page.tmpl", nil)
 }
 
 func (app *application) showDetailsHandler(w http.ResponseWriter, r *http.Request) {

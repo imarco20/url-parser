@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"text/template"
 	"time"
 )
 
@@ -15,7 +16,8 @@ type config struct {
 
 type application struct {
 	config
-	logger *log.Logger
+	logger         *log.Logger
+	templatesCache map[string]*template.Template
 }
 
 func main() {
@@ -27,9 +29,15 @@ func main() {
 
 	logger := log.New(os.Stdout, "", log.LstdFlags)
 
+	templatesCache, err := cacheAllTemplates("./ui/html/")
+	if err != nil {
+		logger.Println(err)
+	}
+
 	app := &application{
-		config: cfg,
-		logger: logger,
+		config:         cfg,
+		logger:         logger,
+		templatesCache: templatesCache,
 	}
 
 	server := &http.Server{
@@ -41,6 +49,6 @@ func main() {
 	}
 
 	logger.Printf("starting server on %s", server.Addr)
-	err := server.ListenAndServe()
+	err = server.ListenAndServe()
 	logger.Fatal(err)
 }

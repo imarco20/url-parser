@@ -1,0 +1,15 @@
+{{template "base" .}}
+
+{{define "title"}}Home{{end}}
+
+{{define "body"}}
+<form action='/link' method='POST'>
+    <div>
+        <label>Link URL:</label>
+        <input type='text' name='link'>
+    </div>
+    <div>
+        <button type='submit' value='Find Details'>
+    </div>
+</form>
+{{end}}

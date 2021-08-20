@@ -31,6 +31,11 @@ type LinkCount struct {
 	InAccessible int
 }
 
+type Button struct {
+	Type string
+	Text string
+}
+
 func FindTitle(body io.Reader) (string, error) {
 	document, err := html.Parse(body)
 	if err != nil {
@@ -108,6 +113,32 @@ func FindAllLinks(body io.Reader, pageURL string) (LinkCount, error) {
 	return linkCount, nil
 }
 
+func CheckIfPageHasLoginForm(body io.Reader) (bool, error) {
+	document, err := html.Parse(body)
+	if err != nil {
+		return false, err
+	}
+
+	var buttons []Button
+	buttonNodes := getNodes(document, "button")
+	for _, node := range buttonNodes {
+		buttons = append(buttons, buildButton(node))
+	}
+
+	loginKeywords := []string{"login", "Login", "Log In", "log in", "Sign In", "sign in"}
+	for _, button := range buttons {
+		if button.Type == "submit" {
+			for _, keyword := range loginKeywords {
+				if keyword == button.Text {
+					return true, nil
+				}
+			}
+		}
+	}
+
+	return false, nil
+}
+
 func getNodes(node *html.Node, nodeType string) []*html.Node {
 
 	// Base Case
@@ -135,6 +166,17 @@ func buildLink(node *html.Node) (link Link) {
 		}
 	}
 
+	return
+}
+
+func buildButton(node *html.Node) (button Button) {
+	for _, attr := range node.Attr {
+		if attr.Key == "type" {
+			button.Type = attr.Val
+		}
+	}
+
+	button.Text = getTextFromNode(node)
 	return
 }
 

@@ -1,0 +1,28 @@
+{{template "base" .}}
+
+{{define "title"}}Link Details{{end}}
+
+{{define "body"}}
+<div class='snippet'>
+    {{with .Link}}
+    <div class='metadata'>
+        <strong>URL: {{.PageURL}}</strong>
+        <br>
+        <strong>HTML Version: {{.HTMLVersion}}</strong>
+        <br>
+        <strong>Title: {{.Title}}</strong>
+        <br>
+        <strong>Heading Levels: {{.Headings}}</strong>
+        <br>
+        <strong>Internal Links: {{.Links.Internal}}</strong>
+        <br>
+        <strong>External Links: {{.Links.External}}</strong>
+        <br>
+        <strong>Inaccessible Links: {{.Links.InAccessible}}</strong>
+        <br>
+        <strong>Page Has Login Form: {{.HasLoginForm}}</strong>
+        <br>
+    </div>
+    {{end}}
+</div>
+{{end}}

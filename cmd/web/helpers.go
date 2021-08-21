@@ -2,6 +2,8 @@ package main
 
 import (
 	"bytes"
+	"encoding/json"
+	"errors"
 	"io"
 	"log"
 	"marcode.io/url-parser/pkg/models"
@@ -9,18 +11,34 @@ import (
 	"net/http"
 )
 
+type envelope map[string]interface{}
+
 func (app *application) renderTemplate(w http.ResponseWriter, r *http.Request, templateName string, templateData *templateData) {
 	templateSet, ok := app.templatesCache[templateName]
 	if !ok {
-		http.Error(w, "error rendering template files", http.StatusInternalServerError)
+		app.serverErrorResponse(w, r, errors.New("error rendering template files"))
 		return
 	}
 
 	err := templateSet.Execute(w, templateData)
 	if err != nil {
-		http.Error(w, "error rendering template files", http.StatusInternalServerError)
+		app.serverErrorResponse(w, r, errors.New("error rendering template files"))
 		return
 	}
+}
+
+func (app *application) writeJSON(w http.ResponseWriter, status int, data interface{}) error {
+	jsonData, err := json.Marshal(data)
+
+	if err != nil {
+		return err
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
+	w.Write(jsonData)
+
+	return nil
 }
 
 func getLinkDetails(url string) models.LinkDetails {

@@ -7,7 +7,7 @@ import (
 
 func (app *application) homeHandler(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {
-		http.NotFound(w, r)
+		app.notFoundResponse(w, r)
 		return
 	}
 
@@ -16,7 +16,7 @@ func (app *application) homeHandler(w http.ResponseWriter, r *http.Request) {
 		app.renderTemplate(w, r, "home.page.tmpl", &templateData{Form: forms.New(nil)})
 
 	default:
-		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+		app.methodNotAllowedResponse(w, r)
 	}
 }
 
@@ -28,7 +28,7 @@ func (app *application) showDetailsHandler(w http.ResponseWriter, r *http.Reques
 
 		err := r.ParseForm()
 		if err != nil {
-			http.Error(w, "invalid form input", http.StatusBadRequest)
+			app.badRequestResponse(w, r, err)
 			return
 		}
 
@@ -44,6 +44,6 @@ func (app *application) showDetailsHandler(w http.ResponseWriter, r *http.Reques
 		}
 
 	default:
-		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+		app.methodNotAllowedResponse(w, r)
 	}
 }

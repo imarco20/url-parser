@@ -17,7 +17,7 @@ func FindTitle(body io.Reader) (string, error) {
 
 	nodes := getNodes(document, "title")
 	if len(nodes) == 0 {
-		return "", err
+		return "", ErrPageTitleNotFound
 	}
 
 	titleNode := nodes[0]

@@ -12,8 +12,7 @@ func TestFindHTMLVersion(t *testing.T) {
 					<body></body>
 					</html>`
 
-		version, err := FindHTMLVersion(strings.NewReader(example))
-		checkError(t, err)
+		version, _ := FindHTMLVersion(strings.NewReader(example))
 
 		assertHTMLVersion(t, "5.0", version)
 	})
@@ -24,8 +23,20 @@ func TestFindHTMLVersion(t *testing.T) {
 					<body></body>
 					</html>`
 
+		version, _ := FindHTMLVersion(strings.NewReader(example))
+
+		assertHTMLVersion(t, "", version)
+	})
+
+	t.Run("it returns an error if the HTML version is not found", func(t *testing.T) {
+		example := `<html>
+						<head></head>
+						<body></body>
+					</html>
+					`
+
 		version, err := FindHTMLVersion(strings.NewReader(example))
-		checkError(t, err)
+		assertError(t, ErrHTMLVersionNotFound, err)
 
 		assertHTMLVersion(t, "", version)
 	})
@@ -40,8 +51,7 @@ func TestFindTitle(t *testing.T) {
 					</head>
 					</html>`
 
-		title, err := FindTitle(strings.NewReader(htmlPage))
-		checkError(t, err)
+		title, _ := FindTitle(strings.NewReader(htmlPage))
 
 		assertPageTitle(t, "Test Page", title)
 	})
@@ -53,8 +63,7 @@ func TestFindTitle(t *testing.T) {
 					</head>
 					</html>`
 
-		title, err := FindTitle(strings.NewReader(htmlPage))
-		checkError(t, err)
+		title, _ := FindTitle(strings.NewReader(htmlPage))
 
 		assertPageTitle(t, "New Page", title)
 	})
@@ -65,8 +74,19 @@ func TestFindTitle(t *testing.T) {
 					</head>
 					</html>`
 
+		title, _ := FindTitle(strings.NewReader(htmlPage))
+
+		assertPageTitle(t, "", title)
+	})
+
+	t.Run(`it returns an error on parsing a document with missing title tag`, func(t *testing.T) {
+		htmlPage := `<html>
+					<head>
+					</head>
+					</html>`
+
 		title, err := FindTitle(strings.NewReader(htmlPage))
-		checkError(t, err)
+		assertError(t, ErrPageTitleNotFound, err)
 
 		assertPageTitle(t, "", title)
 	})
@@ -80,8 +100,7 @@ func TestFindHeadingsCount(t *testing.T) {
 						</body>
 					</html>
 					`
-		headings, err := FindAllHeadings(strings.NewReader(example))
-		checkError(t, err)
+		headings, _ := FindAllHeadings(strings.NewReader(example))
 
 		expected := 1
 		actual := headings.HOne
@@ -101,8 +120,7 @@ func TestFindHeadingsCount(t *testing.T) {
 						</body>
 					</html>
 					`
-		headings, err := FindAllHeadings(strings.NewReader(example))
-		checkError(t, err)
+		headings, _ := FindAllHeadings(strings.NewReader(example))
 
 		// We should find 1 H2 Element
 		assertHeadingCount(t, 1, headings.HTwo, "H2")
@@ -116,8 +134,7 @@ func TestFindHeadingsCount(t *testing.T) {
 						</body>
 					</html>
 					`
-		headings, err := FindAllHeadings(strings.NewReader(example))
-		checkError(t, err)
+		headings, _ := FindAllHeadings(strings.NewReader(example))
 
 		assertHeadingCount(t, 0, headings.HOne, "H1")
 		assertHeadingCount(t, 0, headings.HTwo, "H2")
@@ -139,8 +156,7 @@ func TestFindAllLinks(t *testing.T) {
 						</body>
 					</html>`
 
-		linksCount, err := FindAllLinks(strings.NewReader(example), pageURL)
-		checkError(t, err)
+		linksCount, _ := FindAllLinks(strings.NewReader(example), pageURL)
 
 		externalLinks := linksCount.External
 		assertCount(t, 1, externalLinks)
@@ -157,8 +173,7 @@ func TestFindAllLinks(t *testing.T) {
 						</body>
 					</html>`
 
-		linksCount, err := FindAllLinks(strings.NewReader(example), pageURL)
-		checkError(t, err)
+		linksCount, _ := FindAllLinks(strings.NewReader(example), pageURL)
 
 		internalLinks := linksCount.Internal
 		externalLinks := linksCount.External
@@ -178,8 +193,7 @@ func TestFindAllLinks(t *testing.T) {
 						</body>
 					</html>`
 
-		linksCount, err := FindAllLinks(strings.NewReader(example), pageURL)
-		checkError(t, err)
+		linksCount, _ := FindAllLinks(strings.NewReader(example), pageURL)
 
 		internalLinks := linksCount.Internal
 		externalLinks := linksCount.External
@@ -199,8 +213,7 @@ func TestFindAllLinks(t *testing.T) {
 						</body>
 					</html>`
 
-		links, err := FindAllLinks(strings.NewReader(example), pageURL)
-		checkError(t, err)
+		links, _ := FindAllLinks(strings.NewReader(example), pageURL)
 
 		internalLinks := links.Internal
 		externalLinks := links.External
@@ -219,8 +232,7 @@ func TestFindAllLinks(t *testing.T) {
 						</body>
 					</html>`
 
-		links, err := FindAllLinks(strings.NewReader(example), pageURL)
-		checkError(t, err)
+		links, _ := FindAllLinks(strings.NewReader(example), pageURL)
 
 		assertCount(t, 2, links.InAccessible)
 	})
@@ -235,8 +247,7 @@ func TestFindAllLinks(t *testing.T) {
 						</body>
 					</html>`
 
-		links, err := FindAllLinks(strings.NewReader(example), pageURL)
-		checkError(t, err)
+		links, _ := FindAllLinks(strings.NewReader(example), pageURL)
 
 		assertCount(t, 1, links.InAccessible)
 	})
@@ -254,8 +265,7 @@ func TestCheckIfPageHasLoginForm(t *testing.T) {
 						<button type="submit">Login</button>
 					</form>`
 
-		contains, err := CheckIfPageHasLoginForm(strings.NewReader(example))
-		checkError(t, err)
+		contains, _ := CheckIfPageHasLoginForm(strings.NewReader(example))
 
 		assertPageContainsLoginForm(t, true, contains)
 	})
@@ -266,8 +276,7 @@ func TestCheckIfPageHasLoginForm(t *testing.T) {
 					<body></body>
 					</html`
 
-		contains, err := CheckIfPageHasLoginForm(strings.NewReader(example))
-		checkError(t, err)
+		contains, _ := CheckIfPageHasLoginForm(strings.NewReader(example))
 
 		assertPageContainsLoginForm(t, false, contains)
 	})
@@ -308,9 +317,9 @@ func assertPageContainsLoginForm(t testing.TB, expected, actual bool) {
 	}
 }
 
-func checkError(t testing.TB, err error) {
+func assertError(t testing.TB, expected, actual error) {
 	t.Helper()
-	if err != nil {
-		t.Fatalf("test failed and encountered the following error: %v", err)
+	if expected != actual {
+		t.Errorf("expected to receive error %q but got %q", expected.Error(), actual.Error())
 	}
 }

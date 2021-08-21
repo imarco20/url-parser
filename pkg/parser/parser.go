@@ -1,6 +1,12 @@
 package parser
 
-import "golang.org/x/net/html"
+import (
+	"fmt"
+	"golang.org/x/net/html"
+)
+
+var ErrHTMLVersionNotFound = fmt.Errorf("HTML version not found")
+var ErrPageTitleNotFound = fmt.Errorf("page title not found")
 
 type HTMLNode struct {
 	*html.Node

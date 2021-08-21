@@ -10,7 +10,6 @@ type HTMLTag struct {
 }
 
 func FindHTMLVersion(body io.Reader) (string, error) {
-	// TODO: Extract in a separate function
 	document, err := html.Parse(body)
 	if err != nil {
 		return "", err
@@ -18,15 +17,18 @@ func FindHTMLVersion(body io.Reader) (string, error) {
 
 	nodes := getNodes(document, "html")
 
-	// TODO: Handle Error in a user friendly way
 	if len(nodes) == 0 {
-		return "", err
+		return "", nil
 	}
 
 	htmlNode := nodes[0]
 
 	var htmlTag HTMLTag
 	htmlTag = htmlNode.buildVersion()
+
+	if htmlTag.Version == "" {
+		return "", ErrHTMLVersionNotFound
+	}
 
 	return htmlTag.Version, nil
 }

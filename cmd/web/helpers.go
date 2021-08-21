@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"fmt"
 	"io"
 	"log"
 	"marcode.io/url-parser/pkg/models"
@@ -33,7 +32,6 @@ func getLinkDetails(url string) models.LinkDetails {
 	}
 
 	responseBody, _ := io.ReadAll(response.Body)
-	fmt.Println(string(responseBody))
 
 	var details models.LinkDetails
 
@@ -48,7 +46,7 @@ func getLinkDetails(url string) models.LinkDetails {
 	headings, err := parser.FindAllHeadings(bytes.NewReader(responseBody))
 	details.Headings = headings
 
-	links, _ := parser.FindAllLinks(bytes.NewReader(responseBody), url)
+	links, _ := parser.FindAllLinks(http.Get, bytes.NewReader(responseBody), url)
 	details.Links = links
 
 	hasLoginForm, _ := parser.CheckIfPageHasLoginForm(bytes.NewReader(responseBody))

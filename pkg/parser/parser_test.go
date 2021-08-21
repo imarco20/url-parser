@@ -1,9 +1,28 @@
 package parser
 
 import (
+	"net/http"
 	"strings"
 	"testing"
 )
+
+func mockHttpGetter(url string) (*http.Response, error) {
+	accessibleLinks := map[string]bool{
+		"https://google.com":        true,
+		"https://somedomain.com":    false,
+		"https://anotherdomain.com": false,
+	}
+
+	response := http.Response{}
+
+	if accessibleLinks[url] == true {
+		response.StatusCode = http.StatusOK
+	} else {
+		response.StatusCode = http.StatusInternalServerError
+	}
+
+	return &response, nil
+}
 
 func TestFindHTMLVersion(t *testing.T) {
 	t.Run("it returns the value of HTML version attribute if it exists", func(t *testing.T) {
@@ -156,7 +175,7 @@ func TestFindAllLinks(t *testing.T) {
 						</body>
 					</html>`
 
-		linksCount, _ := FindAllLinks(strings.NewReader(example), pageURL)
+		linksCount, _ := FindAllLinks(mockHttpGetter, strings.NewReader(example), pageURL)
 
 		externalLinks := linksCount.External
 		assertCount(t, 1, externalLinks)
@@ -173,7 +192,7 @@ func TestFindAllLinks(t *testing.T) {
 						</body>
 					</html>`
 
-		linksCount, _ := FindAllLinks(strings.NewReader(example), pageURL)
+		linksCount, _ := FindAllLinks(mockHttpGetter, strings.NewReader(example), pageURL)
 
 		internalLinks := linksCount.Internal
 		externalLinks := linksCount.External
@@ -193,7 +212,7 @@ func TestFindAllLinks(t *testing.T) {
 						</body>
 					</html>`
 
-		linksCount, _ := FindAllLinks(strings.NewReader(example), pageURL)
+		linksCount, _ := FindAllLinks(mockHttpGetter, strings.NewReader(example), pageURL)
 
 		internalLinks := linksCount.Internal
 		externalLinks := linksCount.External
@@ -213,7 +232,7 @@ func TestFindAllLinks(t *testing.T) {
 						</body>
 					</html>`
 
-		links, _ := FindAllLinks(strings.NewReader(example), pageURL)
+		links, _ := FindAllLinks(mockHttpGetter, strings.NewReader(example), pageURL)
 
 		internalLinks := links.Internal
 		externalLinks := links.External
@@ -232,7 +251,7 @@ func TestFindAllLinks(t *testing.T) {
 						</body>
 					</html>`
 
-		links, _ := FindAllLinks(strings.NewReader(example), pageURL)
+		links, _ := FindAllLinks(mockHttpGetter, strings.NewReader(example), pageURL)
 
 		assertCount(t, 2, links.InAccessible)
 	})
@@ -247,7 +266,7 @@ func TestFindAllLinks(t *testing.T) {
 						</body>
 					</html>`
 
-		links, _ := FindAllLinks(strings.NewReader(example), pageURL)
+		links, _ := FindAllLinks(mockHttpGetter, strings.NewReader(example), pageURL)
 
 		assertCount(t, 1, links.InAccessible)
 	})

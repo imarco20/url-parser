@@ -7,6 +7,8 @@ import (
 	"strings"
 )
 
+type HttpGetter func(string) (*http.Response, error)
+
 func isInternalLink(href, baseURL string) bool {
 	uri, err := url.Parse(href)
 	if err != nil {
@@ -48,8 +50,8 @@ func getUniqueLinks(links []Link) []Link {
 	return uniqueLinks
 }
 
-func isAccessibleLink(url string) bool {
-	response, err := http.Get(url)
+func isAccessibleLink(hg HttpGetter, url string) bool {
+	response, err := hg(url)
 	if err != nil {
 		return false
 	}

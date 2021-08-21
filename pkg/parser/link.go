@@ -15,7 +15,7 @@ type LinkCount struct {
 	InAccessible int
 }
 
-func FindAllLinks(body io.Reader, pageURL string) (LinkCount, error) {
+func FindAllLinks(hg HttpGetter, body io.Reader, pageURL string) (LinkCount, error) {
 	document, err := html.Parse(body)
 	if err != nil {
 		return LinkCount{}, err
@@ -38,7 +38,7 @@ func FindAllLinks(body io.Reader, pageURL string) (LinkCount, error) {
 			linkCount.External++
 		}
 
-		if !isAccessibleLink(link.Href) {
+		if !isAccessibleLink(hg, link.Href) {
 			linkCount.InAccessible++
 		}
 	}

@@ -3,17 +3,14 @@
 {{define "title"}}Home{{end}}
 
 {{define "body"}}
-<form action='/details' method='POST'>
+<form class="form-container" action='/details' method='POST'>
     {{with .Form}}
     <div>
-        <label>Link URL:</label>
         {{with .Errors.Get "link"}}
             <label class='error'>{{.}}</label>
         {{end}}
-        <input type='text' name='link' value='{{.Get "link"}}'>
-    </div>
-    <div>
-        <button type='submit' value='Find Details'>
+        <input type='text' name='link' value='{{.Get "link"}}' placeholder="Enter a webpage link">
+        <button type='submit'>Find Details</button>
     </div>
     {{end}}
 </form>

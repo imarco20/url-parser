@@ -3,26 +3,87 @@
 {{define "title"}}Link Details{{end}}
 
 {{define "body"}}
-<div class='snippet'>
+<div class='details'>
     {{with .Link}}
-    <div class='metadata'>
-        <strong>URL: {{.PageURL}}</strong>
-        <br>
-        <strong>HTML Version: {{.HTMLVersion}}</strong>
-        <br>
-        <strong>Title: {{.Title}}</strong>
-        <br>
-        <strong>Heading Levels: {{.Headings}}</strong>
-        <br>
-        <strong>Internal Links: {{.Links.Internal}}</strong>
-        <br>
-        <strong>External Links: {{.Links.External}}</strong>
-        <br>
-        <strong>Inaccessible Links: {{.Links.InAccessible}}</strong>
-        <br>
-        <strong>Page Has Login Form: {{.HasLoginForm}}</strong>
-        <br>
-    </div>
+        <section>
+            <table>
+                <tr>
+                    <th>URL</th>
+                    <td></td>
+                    <td>{{.PageURL}}</td>
+                </tr>
+                <tr>
+                    <th>HTML Version</th>
+                    <td></td>
+                    <td>{{.HTMLVersion}}</td>
+                </tr>
+                <tr>
+                    <th>Title</th>
+                    <td></td>
+                    <td>{{.Title}}</td>
+                </tr>
+                <tr>
+                    <th>Heading Levels</th>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th></th>
+                    <th>H1</th>
+                    <td>{{.Headings.HOne}}</td>
+                </tr>
+                <tr>
+                    <th></th>
+                    <th>H2</th>
+                    <td>{{.Headings.HTwo}}</td>
+                </tr>
+                <tr>
+                    <th></th>
+                    <th>H3</th>
+                    <td>{{.Headings.HThree}}</td>
+                </tr>
+                <tr>
+                    <th></th>
+                    <th>H4</th>
+                    <td>{{.Headings.HFour}}</td>
+                </tr>
+                <tr>
+                    <th></th>
+                    <th>H5</th>
+                    <td>{{.Headings.HFive}}</td>
+                </tr>
+                <tr>
+                    <th></th>
+                    <th>H6</th>
+                    <td>{{.Headings.HSix}}</td>
+                </tr>
+                <tr>
+                    <th>Links</th>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th></th>
+                    <th>Internal</th>
+                    <td>{{.Links.Internal}}</td>
+                </tr>
+                <tr>
+                    <th></th>
+                    <th>External</th>
+                    <td>{{.Links.External}}</td>
+                </tr>
+                <tr>
+                    <th></th>
+                    <th>Inaccessible</th>
+                    <td>{{.Links.InAccessible}}</td>
+                </tr>
+                <tr>
+                    <th>Page Has Login Form</th>
+                    <td></td>
+                    <td>{{.HasLoginForm}}</td>
+                </tr>
+            </table>
+        </section>
     {{end}}
 </div>
 {{end}}

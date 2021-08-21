@@ -1,0 +1,70 @@
+*, *::after, *::before {
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #fff;
+    font-family: Roboto, sans-serif;
+    text-align: center;
+}
+
+.form-container {
+    width: 50%;
+    margin: 1.5rem auto;
+}
+
+.form-container > div {
+    display: flex;
+}
+
+.form-container input {
+    flex: 1 1 auto;
+    padding: 1rem;
+    font-size: 1rem;
+    border-radius: 10px;
+}
+
+.form-container button {
+    margin-inline-start: 1rem;
+    padding: 1rem;
+    width: 15%;
+    font-size: 1rem;
+    border-radius: 10px;
+}
+
+/* DETAILS */
+
+.details {
+    margin: 1.5rem auto;
+    width: 50%;
+    text-align: left;
+}
+
+.details table {
+    width: 75%;
+    margin: auto;
+}
+
+table {
+    /*border-collapse: collapse;*/
+    /*width: 100%;*/
+}
+
+td, th {
+    border-top: 1px solid #000000;
+    border-bottom: 1px solid #000000;
+    text-align: left;
+    padding: 8px;
+}
+
+th {
+    /*background-color: #dddddd;*/
+}
+
+table tr > th:nth-child(1) {
+    width: 30%;
+}
+
+table tr > th:nth-child(2) {
+    width: 20%;
+}

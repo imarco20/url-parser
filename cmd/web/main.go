@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"marcode.io/url-parser/pkg/models"
 	"net/http"
 	"os"
 	"text/template"
@@ -18,6 +19,7 @@ type application struct {
 	config
 	logger         *log.Logger
 	templatesCache map[string]*template.Template
+	parser         models.Parser
 }
 
 func main() {
@@ -38,6 +40,7 @@ func main() {
 		config:         cfg,
 		logger:         logger,
 		templatesCache: templatesCache,
+		parser:         models.GetLinkDetails,
 	}
 
 	server := &http.Server{

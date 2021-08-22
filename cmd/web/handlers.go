@@ -39,7 +39,7 @@ func (app *application) showDetailsHandler(w http.ResponseWriter, r *http.Reques
 		if !form.Valid() {
 			app.renderTemplate(w, r, "home.page.tmpl", &templateData{Form: form})
 		} else {
-			details := getLinkDetails(form.Values.Get("link"))
+			details := app.parser(form.Values.Get("link"))
 			app.renderTemplate(w, r, "details.page.tmpl", &templateData{Link: details})
 		}
 

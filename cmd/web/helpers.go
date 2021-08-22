@@ -1,13 +1,8 @@
 package main
 
 import (
-	"bytes"
 	"encoding/json"
 	"errors"
-	"io"
-	"log"
-	"marcode.io/url-parser/pkg/models"
-	"marcode.io/url-parser/pkg/parser"
 	"net/http"
 )
 
@@ -39,36 +34,4 @@ func (app *application) writeJSON(w http.ResponseWriter, status int, data interf
 	w.Write(jsonData)
 
 	return nil
-}
-
-func getLinkDetails(url string) models.LinkDetails {
-
-	response, err := http.Get(url)
-
-	if err != nil {
-		log.Printf("error fetching url: %v", err)
-	}
-
-	responseBody, _ := io.ReadAll(response.Body)
-
-	var details models.LinkDetails
-
-	details.PageURL = url
-
-	version, _ := parser.FindHTMLVersion(bytes.NewReader(responseBody))
-	details.HTMLVersion = version
-
-	title, _ := parser.FindTitle(bytes.NewReader(responseBody))
-	details.Title = title
-
-	headings, err := parser.FindAllHeadings(bytes.NewReader(responseBody))
-	details.Headings = headings
-
-	links, _ := parser.FindAllLinks(http.Get, bytes.NewReader(responseBody), url)
-	details.Links = links
-
-	hasLoginForm, _ := parser.CheckIfPageHasLoginForm(bytes.NewReader(responseBody))
-	details.HasLoginForm = hasLoginForm
-
-	return details
 }

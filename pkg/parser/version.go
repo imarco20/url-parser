@@ -17,10 +17,6 @@ func FindHTMLVersion(body io.Reader) (string, error) {
 
 	nodes := getNodes(document, "html")
 
-	if len(nodes) == 0 {
-		return "", nil
-	}
-
 	htmlNode := nodes[0]
 
 	var htmlTag HTMLTag

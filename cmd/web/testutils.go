@@ -3,11 +3,26 @@ package main
 import (
 	"io"
 	"log"
+	"marcode.io/url-parser/pkg/models"
+	"marcode.io/url-parser/pkg/parser"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
 	"testing"
 )
+
+// mockGetLinkDetails is a function that mocks the behavior of a function
+// that takes a link url and returns its details
+func mockGetLinkDetails(url string) models.LinkDetails {
+	return models.LinkDetails{
+		PageURL:      url,
+		HTMLVersion:  "1.0",
+		Title:        "Test Page",
+		Headings:     parser.HeadingCount{1, 2, 3, 4, 5, 6},
+		Links:        parser.LinkCount{7, 8, 9},
+		HasLoginForm: false,
+	}
+}
 
 // newTestApplication returns an instance of our application
 // composing mocked dependencies
@@ -19,6 +34,7 @@ func newTestApplication(t *testing.T) *application {
 	return &application{
 		logger:         log.New(io.Discard, "", 0),
 		templatesCache: templateCache,
+		parser:         mockGetLinkDetails,
 	}
 }
 

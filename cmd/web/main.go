@@ -1,12 +1,14 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"log"
 	"marcode.io/url-parser/pkg/models"
 	"net/http"
 	"os"
+	"os/signal"
 	"text/template"
 	"time"
 )
@@ -52,6 +54,26 @@ func main() {
 	}
 
 	logger.Printf("starting server on %s", server.Addr)
-	err = server.ListenAndServe()
-	logger.Fatal(err)
+
+	go func() {
+		err = server.ListenAndServe()
+		logger.Fatal(err)
+	}()
+
+	sigChan := make(chan os.Signal, 1)
+	signal.Notify(sigChan, os.Interrupt)
+	signal.Notify(sigChan, os.Kill)
+
+	sig := <-sigChan
+	logger.Println("Received terminate, graceful shutdown", sig)
+
+	// Graceful Shutdown for the server
+	tc, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+
+	defer cancel()
+
+	err = server.Shutdown(tc)
+	if err != nil {
+		logger.Println(err)
+	}
 }

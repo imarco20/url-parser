@@ -5,10 +5,12 @@ import (
 	"io"
 )
 
+// Title is a type that represents a HTML title tag
 type Title struct {
 	Value string
 }
 
+// FindTitle finds a title HTML node and returns its text
 func FindTitle(body io.Reader) (string, error) {
 	document, err := html.Parse(body)
 	if err != nil {

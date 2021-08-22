@@ -8,6 +8,7 @@ import (
 	"net/http"
 )
 
+// LinkDetails contains all the required details about a web page link
 type LinkDetails struct {
 	PageURL      string
 	HTMLVersion  string
@@ -22,6 +23,7 @@ type LinkDetails struct {
 // It's used to mock the behavior of GetLinkDetails in tests
 type Parser func(url string) LinkDetails
 
+// GetLinkDetails returns all the details of the parameter URL
 func GetLinkDetails(url string) LinkDetails {
 
 	response, err := http.Get(url)

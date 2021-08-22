@@ -5,6 +5,7 @@ import (
 	"net/http"
 )
 
+// homeHandler handles GET requests to the home page and renders its template
 func (app *application) homeHandler(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {
 		app.notFoundResponse(w, r)
@@ -20,6 +21,8 @@ func (app *application) homeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// showDetailsHandler handles POST requests sent by submitting the form in the home page
+// and displays URL details
 func (app *application) showDetailsHandler(w http.ResponseWriter, r *http.Request) {
 
 	switch r.Method {
@@ -45,5 +48,18 @@ func (app *application) showDetailsHandler(w http.ResponseWriter, r *http.Reques
 
 	default:
 		app.methodNotAllowedResponse(w, r)
+	}
+}
+
+// healthCheckHandler handles requests to check the application is up and running
+func (app *application) healthCheckHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		app.methodNotAllowedResponse(w, r)
+		return
+	}
+
+	err := app.writeJSON(w, http.StatusOK, envelope{"health": "the application is working properly"})
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
 	}
 }

@@ -5,11 +5,15 @@ import (
 	"io"
 )
 
+// SubmitterElement is a type that represents HTML elements whose
+// type attribute is submit
 type SubmitterElement struct {
 	Type string
 	Text string
 }
 
+// CheckIfPageHasLoginForm returns a boolean that represents whether the page has a submitter element
+// whose text is login
 func CheckIfPageHasLoginForm(body io.Reader) (bool, error) {
 	document, err := html.Parse(body)
 	if err != nil {

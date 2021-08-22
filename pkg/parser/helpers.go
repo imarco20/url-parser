@@ -7,8 +7,12 @@ import (
 	"strings"
 )
 
+// HttpGetter is a type for functions that send HTTP GET requests
+// to the specified URL. This is used to wrap sending HTTP requests
 type HttpGetter func(string) (*http.Response, error)
 
+// isInternalLink compares a link to it's parent URL
+// to check if they belong to the same host
 func isInternalLink(href, baseURL string) bool {
 	childHost, err := getUrlHost(href)
 	if err != nil {
@@ -36,10 +40,12 @@ func isInternalLink(href, baseURL string) bool {
 	return true
 }
 
+// removeTrailingSlash removes a trailing slash from a URL
 func removeTrailingSlash(link string) string {
 	return strings.TrimRight(link, "/")
 }
 
+// getUniqueLinks filters out links that appear more than once in the page
 func getUniqueLinks(links []Link) []Link {
 	visited := make(map[string]bool)
 	var uniqueLinks []Link
@@ -54,6 +60,8 @@ func getUniqueLinks(links []Link) []Link {
 	return uniqueLinks
 }
 
+// isAccessibleLink sends a GET request to the URL parameter and checks
+// whether the response has status 200 OK
 func isAccessibleLink(hg HttpGetter, url string) bool {
 	response, err := hg(url)
 	if err != nil {
@@ -67,6 +75,7 @@ func isAccessibleLink(hg HttpGetter, url string) bool {
 	return false
 }
 
+// getTextFromNode returns the text of a HTML node
 func getTextFromNode(node *html.Node) string {
 	// Base Case
 	if node.Type == html.TextNode {

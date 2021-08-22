@@ -7,11 +7,14 @@ import (
 	"text/template"
 )
 
+// templateData holds any data we want to pass to the template file
 type templateData struct {
 	Form *forms.Form
 	Link models.LinkDetails
 }
 
+// cacheAllTemplates scans the UI directory for template files,
+// parses them into template sets and saves them to the template cache map
 func cacheAllTemplates(dir string) (map[string]*template.Template, error) {
 
 	templatesCache := map[string]*template.Template{}

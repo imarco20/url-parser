@@ -5,16 +5,20 @@ import (
 	"io"
 )
 
+// Link is a type for representing HTML anchor tags
 type Link struct {
 	Href string
 }
 
+// LinkCount includes the count of internal, external, and in-accessible links in a web page
 type LinkCount struct {
 	Internal     int
 	External     int
 	InAccessible int
 }
 
+// FindAllLinks finds all HTML anchor nodes and stores
+// their details in a LinkCount object
 func FindAllLinks(hg HttpGetter, body io.Reader, pageURL string) (LinkCount, error) {
 	document, err := html.Parse(body)
 	if err != nil {

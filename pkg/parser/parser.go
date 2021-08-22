@@ -8,10 +8,12 @@ import (
 var ErrHTMLVersionNotFound = fmt.Errorf("HTML version not found")
 var ErrPageTitleNotFound = fmt.Errorf("page title not found")
 
+// HTMLNode is a type that embeds *html.Node
 type HTMLNode struct {
 	*html.Node
 }
 
+// getNodes returns all nodes of the tag parameter
 func getNodes(node *html.Node, tag string) []*HTMLNode {
 
 	// Base Case
@@ -27,6 +29,8 @@ func getNodes(node *html.Node, tag string) []*HTMLNode {
 	return nodes
 }
 
+// buildLink is a node method that returns a link object and populates
+// it with the value of its href attribute
 func (node *HTMLNode) buildLink(pageURL string) (link Link) {
 
 	for _, attr := range node.Attr {
@@ -44,6 +48,8 @@ func (node *HTMLNode) buildLink(pageURL string) (link Link) {
 	return link
 }
 
+// buildSubmitterElement returns a submitter element and populates it with the
+// value of its type attribute and its text
 func (node *HTMLNode) buildSubmitterElement() (element SubmitterElement) {
 	for _, attr := range node.Attr {
 		if attr.Key == "type" {
@@ -55,11 +61,13 @@ func (node *HTMLNode) buildSubmitterElement() (element SubmitterElement) {
 	return
 }
 
+// buildTitle returns a title object and populates it with its text
 func (node *HTMLNode) buildTitle() (title Title) {
 	title.Value = getTextFromNode(node.Node)
 	return
 }
 
+// buildVersion returns a HTML tag along with its version
 func (node *HTMLNode) buildVersion() (htmlTag HTMLTag) {
 	for _, attr := range node.Attr {
 		if attr.Key == "version" {

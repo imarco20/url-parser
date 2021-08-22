@@ -5,10 +5,12 @@ import (
 	"io"
 )
 
+// HTMLTag represents a HTML tag
 type HTMLTag struct {
 	Version string
 }
 
+// FindHTMLVersion finds the version of a HTML document
 func FindHTMLVersion(body io.Reader) (string, error) {
 	document, err := html.Parse(body)
 	if err != nil {

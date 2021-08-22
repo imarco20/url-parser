@@ -5,6 +5,7 @@ import (
 	"io"
 )
 
+// HeadingCount includes the count of each HTML heading level
 type HeadingCount struct {
 	HOne   int
 	HTwo   int
@@ -14,6 +15,8 @@ type HeadingCount struct {
 	HSix   int
 }
 
+// FindAllHeadings finds all HTML nodes of every heading level
+// and stores these counts in a HeadingCount object
 func FindAllHeadings(body io.Reader) (HeadingCount, error) {
 	document, err := html.Parse(body)
 	if err != nil {

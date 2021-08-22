@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: url-parser
+  namespace: development
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: url-parser
+      type: app
+      service: url-parser
+  template:
+    metadata:
+      labels:
+        app: url-parser
+        type: app
+        service: url-parser
+    spec:
+      containers:
+        - name: url-parser
+          image: gcr.io/PROJECT_ID/IMAGE:TAG
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              scheme: HTTP
+              path: /healthcheck
+              port: 8080
+            initialDelaySeconds: 5

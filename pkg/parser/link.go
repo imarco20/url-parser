@@ -29,6 +29,10 @@ func FindAllLinks(hg HttpGetter, body io.Reader, pageURL string) (LinkCount, err
 	}
 
 	uniqueLinks := getUniqueLinks(links)
+	accessibleChannel := make(chan struct {
+		string
+		bool
+	})
 
 	var linkCount LinkCount
 	for _, link := range uniqueLinks {
@@ -38,7 +42,17 @@ func FindAllLinks(hg HttpGetter, body io.Reader, pageURL string) (LinkCount, err
 			linkCount.External++
 		}
 
-		if !isAccessibleLink(hg, link.Href) {
+		go func(url string) {
+			accessibleChannel <- struct {
+				string
+				bool
+			}{url, isAccessibleLink(hg, url)}
+		}(link.Href)
+	}
+
+	for i := 0; i < len(uniqueLinks); i++ {
+		result := <-accessibleChannel
+		if !result.bool {
 			linkCount.InAccessible++
 		}
 	}

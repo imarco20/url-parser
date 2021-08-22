@@ -105,10 +105,20 @@ $ docker run -d --rm -p 8080:8080 --name url-parser-container url-parser
 $ make run-contianer
 ```
 
-## Deployment:
+## Deployment
 
 - The project includes Kubernetes deployment files to deploy the application on a Kubernetes Engine.
 - The project also includes a Github actions workflow file to manage a CI/CD pipeline through which you can test, build
   and deploy your latest changes to Cloud.
 - The deployment and Github actions configuration files use Google Kubernetes Engine, and Google Cloud Platform to
   deploy the application. You can replace them with your favorite cloud provider.
+
+## Improvements
+
+- The application's performance can be improved by saving the link and its parsed details in a database. Such that when
+  a user requests the details of a URL that is available in our database, the application returns the details from the
+  database, rather than fetching the details from the beginning.
+- We also need to set an expiry date for a URL's details in the database. When a user requests the details for a URL
+  that hasn't been fetched for more than, for example, a week, the URL is fetched again rather than returning the
+  details from the database. This way, we can make sure that we are returning our users link details that are up to-date
+  with changes that can be made to the URLs request by our users.

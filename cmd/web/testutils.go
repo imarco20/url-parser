@@ -14,6 +14,9 @@ import (
 // mockGetLinkDetails is a function that mocks the behavior of a function
 // that takes a link url and returns its details
 func mockGetLinkDetails(url string) models.LinkDetails {
+	if url != "https://testpage.com" {
+		return models.LinkDetails{}
+	}
 	return models.LinkDetails{
 		PageURL:      url,
 		HTMLVersion:  "1.0",
@@ -73,4 +76,18 @@ func (server *testServer) postForm(t *testing.T, path string, form url.Values) (
 	}
 
 	return response.StatusCode, response.Header, body
+}
+
+func assertResponseBody(t testing.TB, expected, actual string) {
+	t.Helper()
+	if expected != actual {
+		t.Errorf("template isn't rendered as expected")
+	}
+}
+
+func assertResponseCode(t *testing.T, expected, actual int) {
+	t.Helper()
+	if expected != actual {
+		t.Errorf("expected to get a %d response status code, but got %d", expected, actual)
+	}
 }

@@ -27,10 +27,16 @@ func getNodes(node *html.Node, tag string) []*HTMLNode {
 	return nodes
 }
 
-func (node *HTMLNode) buildLink() (link Link) {
+func (node *HTMLNode) buildLink(pageURL string) (link Link) {
 
 	for _, attr := range node.Attr {
 		if attr.Key == "href" {
+			// Case 1: It's a relative path and doesn't have a host
+			uriHost, _ := getUrlHost(attr.Val)
+			if uriHost == "" {
+				link.Href = pageURL + "/" + removeTrailingSlash(attr.Val)
+			}
+			// Case 2: The url has a host
 			link.Href = removeTrailingSlash(attr.Val)
 		}
 	}

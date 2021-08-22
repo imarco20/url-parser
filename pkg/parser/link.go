@@ -25,7 +25,7 @@ func FindAllLinks(hg HttpGetter, body io.Reader, pageURL string) (LinkCount, err
 	linkNodes := getNodes(document, "a")
 
 	for _, node := range linkNodes {
-		links = append(links, node.buildLink())
+		links = append(links, node.buildLink(pageURL))
 	}
 
 	uniqueLinks := getUniqueLinks(links)

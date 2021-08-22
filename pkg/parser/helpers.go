@@ -10,19 +10,23 @@ import (
 type HttpGetter func(string) (*http.Response, error)
 
 func isInternalLink(href, baseURL string) bool {
-	uri, err := url.Parse(href)
+	childHost, err := getUrlHost(href)
 	if err != nil {
 		return false
 	}
 
-	parentUri, err := url.Parse(baseURL)
+	parentHost, err := getUrlHost(baseURL)
 	if err != nil {
 		return false
 	}
 
-	if uri.Host != parentUri.Host {
+	if childHost != parentHost {
+		// Cases 1 and 2: ChildURL is a sub path of the Parent URL
+		// 1. The ParentURL Host doesn't start with www
+		// 2. The ParentURL Host starts with www
+		// Case 3: ChildURL is a relative path
+		if strings.HasSuffix(childHost, parentHost) || strings.HasSuffix(childHost, parentHost[3:]) || childHost == "" {
 
-		if strings.HasSuffix(uri.Host, parentUri.Host) {
 			return true
 		}
 
@@ -75,4 +79,14 @@ func getTextFromNode(node *html.Node) string {
 	}
 
 	return strings.Join(strings.Fields(text), " ")
+}
+
+// getUrlHost returns the host URI of the input link
+func getUrlHost(href string) (string, error) {
+	uri, err := url.Parse(href)
+	if err != nil {
+		return "", err
+	}
+
+	return uri.Host, nil
 }

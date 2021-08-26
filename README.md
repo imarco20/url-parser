@@ -72,7 +72,7 @@ $ brew install make
 ```
 
 - After installing make, you'll have access to all commands specified in the project's Makefile
-- So, to run the applications, just enter
+- So, to run the applications, just enter:
 
 ```
 make run

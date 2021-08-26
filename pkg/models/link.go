@@ -32,6 +32,12 @@ func GetLinkDetails(url string) LinkDetails {
 		log.Printf("error fetching url: %v", err)
 	}
 
+	defer func(body io.ReadCloser) {
+		err := response.Body.Close()
+		if err != nil {
+			log.Println(err)
+		}
+	}(response.Body)
 	responseBody, _ := io.ReadAll(response.Body)
 
 	var details LinkDetails

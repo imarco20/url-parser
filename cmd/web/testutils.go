@@ -63,7 +63,7 @@ func (server *testServer) postForm(t *testing.T, path string, form url.Values) (
 		t.Fatal(err)
 	}
 
-	defer func(body io.Reader) {
+	defer func(body io.ReadCloser) {
 		err := response.Body.Close()
 		if err != nil {
 			log.Println(err)
